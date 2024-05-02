@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    
+    <!-- Link your CSS file -->
+    <link rel="stylesheet" href={{ url_for('static', filename='RegistreLogin.css') }}>
+</head>
+<body>
+    <div id="app" v-cloak>
+
+        <div class="actions">
+            <a href="{{ url_for('views.registre') }}">
+              <!-- <span>Register</span> -->
+              <button>Register</button>
+            </a>
+            <a href="">
+                <!-- <span>Sign in</span> -->
+                <button :class='[{ active: isDisabled("signin") }]'
+                @click.prevent='setComponent("signin")'>Sign in</button>
+              </a>
+        </div>
+
+        <transition name='form' mode='out-in'>
+            <keep-alive>
+                <component :feedback='feedback' :is="currentComponent"
+                @register-form='handleForm' @signin-form='handleForm'></component>
+            </keep-alive>
+        </transition>
+
+    </div>
+
+    <!-- Signin Template -->
+    <template id="signinTemplate">
+        <form ref='form' @submit.prevent='handleForm' action="" class='signin-form'>
+            <h2>Sign in</h2>
+            <div class="form-group">
+                <label for="email">Email </label>
+                <input required v-model='user.email' type="email" id='email' placeholder="exemple@gmail.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input required v-model='user.password' type="password" id='password' placeholder="enter your password">
+            </div>
+            <div class="form-group">
+                <label for="profile">Profile</label>
+                <div class="select-wrapper">
+                    <span class="placeholder" v-show="!user.profile">Select your matched profile</span>
+                    <select required v-model='user.profile' id='profile'>
+                        <option value="Admin">Admin</option>
+                        <option value="Manager">Manager</option>
+                    </select>
+                </div>
+            </div>
+            <input :disabled='!isFormValid' type="submit" value="Sign in">
+        </form>
+    </template>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script src="{{ url_for('static', filename="signin.js") }}"></script>   
+</html>
