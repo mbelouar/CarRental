@@ -32,15 +32,15 @@
 
     <!-- Register Template -->
     <template id="registerTemplate">
-        <form @submit.prevent='onSubmit' ref='form' action="" class='register-form'>
+        <form @submit.prevent='onSubmit' method="post" ref='form' action="" class='register-form'>
             <h2>Register</h2>
             <div class="form-group" >
-                <label for="firstname">Name</label>
-                <input required type="text" v-model.trim='user.firstname' id='firstname' placeholder="Full name">
+                <label for="fullname">Name</label>
+                <input required type="text" v-model.trim='user.fullname' name="fullname" id='fullname' placeholder="Full name">
             </div>
             <div class="form-group">
-                <label for="lastname">Phone</label>
-                <input required type="text" v-model.trim='user.lastname' id='lastname' placeholder="Enter your phone number">
+                <label for="phone">Phone</label>
+                <input required type="text" v-model.trim='user.phone' name="phone" id='phone' placeholder="Enter your phone number">
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
@@ -89,4 +89,4 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 <script src="{{ url_for('static', filename="registre.js") }}"></script>
-</html>
+</html> 

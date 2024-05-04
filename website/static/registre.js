@@ -1,111 +1,3 @@
-// const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-// const registerComponent = {
-//     template: '#registerTemplate',
-//     name: 'RegisterComponent',
-//     data() {
-//         return {
-//             user: {
-//                 firstname: '',
-//                 lastname: '',
-//                 email: '',
-//                 address: '',
-//                 profile: '',
-//                 password: '',
-//                 passwordChck: ''
-//             }
-//         };
-//     },
-//     computed: {
-//         isFormValid() {
-//             return (
-//                 this.isValid('firstname') &&
-//                 this.isValid('lastname') &&
-//                 this.isValid('email') &&
-//                 this.isValid('address') &&
-//                 this.isValid('profile') &&
-//                 this.isValid('password') &&
-//                 this.isValid('passwordChck')
-//             );
-//         }
-//     },
-//     methods: {
-//         isValid(prop) {
-//             switch (prop) {
-//                 case 'firstname':
-//                     return this.user.firstname.length >= 2;
-//                 case 'lastname':
-//                     return this.user.lastname.length >= 2;
-//                 case 'email':
-//                     return emailRegex.test(this.user.email);
-//                 case 'address':
-//                     return this.user.address.length >= 2;
-//                 case 'password':
-//                     return this.user.password.length >= 6;
-//                 case 'passwordChck':
-//                     return this.user.password === this.user.passwordChck;
-//                 case 'profile':
-//                     return !!this.user.profile; // Check if profile is selected
-//                 default:
-//                     return false;
-//             }
-//         },
-//         resetUser() {
-//             this.user.firstname = '';
-//             this.user.lastname = '';
-//             this.user.email = '';
-//             this.user.address = '';
-//             this.user.profile = '';
-//             this.user.password = '';
-//             this.user.passwordChck = '';
-//         },
-//         onSubmit() {
-//             let user = Object.assign({}, this.user);
-//             this.resetUser();
-//             this.$emit('register-form', { type: 'register', data: user });
-//         }
-//     },
-//     mounted() {
-//         let element = this.$el.querySelector('#passwordcheck');
-//         element.addEventListener('blur', () => {
-//             if (!this.isValid('passwordChck')) {
-//                 element.classList.add('invalid');
-//             } else {
-//                 element.classList.remove('invalid');
-//             }
-//         });
-//     }
-// };
-
-// new Vue({
-//     el: '#app',
-//     components: {
-//         register: registerComponent
-//     },
-//     data() {
-//         return {
-//             feedback: {},
-//             currentComponent: 'register'
-//         };
-//     },
-//     methods: {
-//         handleForm(data) {
-//             this.feedback = data;
-//             setTimeout(() => {
-//                 this.setComponent('feedback');
-//             }, 280);
-//         },
-//         isDisabled(btnName) {
-//             return this.currentComponent === btnName;
-//         },
-//         setComponent(componentName) {
-//             if (this.currentComponent !== componentName) {
-//                 this.currentComponent = componentName;
-//             }
-//         }
-//     }
-// });
-
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
@@ -115,8 +7,8 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
             data () {
                 return { 
                     user : {
-                        firstname:'',
-                        lastname:'',
+                        fullname:'',
+                        phone:'',
                         email:'',
                         address:'',
                         profile:'',
@@ -128,8 +20,8 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
             computed: {
                 isFormValid () {
                     return (
-                        this.isValid('firstname') && 
-                        this.isValid('lastname') && 
+                        this.isValid('fullname') && 
+                        this.isValid('phone') && 
                         this.isValid('email') && 
                         this.isValid('address') &&
                         this.isValid('profile') &&
@@ -141,11 +33,11 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
             methods: {
                 isValid(prop) {
                     switch (prop) {
-                        case 'firstname':
-                            return this.user.firstname.length >= 2
+                        case 'fullname':
+                            return this.user.fullname.length >= 2
                             break
-                        case 'lastname':
-                            return this.user.lastname.length >= 2
+                        case 'phone':
+                            return this.user.phone.length >= 2
                             break
                         case 'email':
                             return emailRegex.test(this.user.email)
@@ -166,8 +58,8 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
                     }
                 },
                 resetUser () {
-                    this.user.firstname = ''
-                    this.user.lastname = ''
+                    this.user.fullname = ''
+                    this.user.phone = ''
                     this.user.email = ''
                     this.user.address = ''
                     this.user.profile = ''
@@ -247,7 +139,7 @@ const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
                     }
                 },
                 name (input) {
-                    return input.firstname ? input.firstname : ''
+                    return input.fullname ? input.fullname : ''
                 }
             },
             data () { return {} },
