@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='Clients.css') }}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="{{ url_for('static', filename='gestion.css') }}""> 
 
 </head>
 <body>
@@ -23,21 +22,28 @@
       </div>
     </div>
     <ul class="sidebar-list">
-      <li class="sidebar-list-item active">
-        <a href="#">
+      <li class="sidebar-list-item">
+        <a href="{{ url_for('views.managerHome') }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           <span>Home</span>
         </a>
       </li>
-      <li class="sidebar-list-item">
-        <a href="{{ url_for('views.profile') }}">
+      <li class="sidebar-list-item active">
+        <a href="#">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0m-2 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0"/><path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1M3 12c0 2.09.713 4.014 1.908 5.542A8.986 8.986 0 0 1 12.065 14a8.984 8.984 0 0 1 7.092 3.458A9 9 0 1 0 3 12m9 9a8.963 8.963 0 0 1-5.672-2.012A6.992 6.992 0 0 1 12.065 16a6.991 6.991 0 0 1 5.689 2.92A8.964 8.964 0 0 1 12 21"/></g></svg>
-          <span>Profile</span>
+          <span>Clients</span>
+        </a>
+      </li>
+      <li class="sidebar-list-item">
+        <a href="{{ url_for('views.reservation') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 2048 2048"><path fill="currentColor" d="M896 512v128H512V512zM512 896V768h384v128zm0 256v-128h256v128zM384 512v128H256V512zm0 256v128H256V768zm-128 384v-128h128v128zM128 128v1792h640v128H0V0h1115l549 549v219h-128V640h-512V128zm1024 91v293h293zm640 805h256v1024H896V1024h256V896h128v128h384V896h128zm128 896v-512h-896v512zm0-640v-128h-896v128z"/></svg>
+            <span>Reservations</span>
         </a>
       </li>
       <li class="sidebar-list-item">
         <a href="{{ url_for('views.signin') }}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M3 3h8V1H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H3z"/><path fill="currentColor" d="M13 5v4H5v2h8v4l6-5z"/></svg>         <span>Log out</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M3 3h8V1H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H3z"/><path fill="currentColor" d="M13 5v4H5v2h8v4l6-5z"/></svg>
+            <span>Log out</span>
         </a>
       </li>
       <li class="sidebar-list-item">
@@ -96,21 +102,7 @@
               <div class="box bg-primary">
                 <i class="fa fa-eye"></i>
                 <h3>5,154</h3>
-                <p class="lead">Manager</p>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="box danger">
-                <i class="fa fa-user-o"></i>
-                <h3>245</h3>
-                <p class="lead">Car</p>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="box warning">
-                <i class="fa fa-shopping-cart"></i>
-                <h3>5,154</h3>
-                <p class="lead">Reservation</p>
+                <p class="lead">Client</p>
               </div>
             </div>
       
@@ -125,10 +117,10 @@
           <div class="table-title">
             <div class="row">
               <div class="col-sm-6">
-                <h2>Manage <b>Employees</b></h2>
+                <h2>Manage <b>Clients</b></h2>
               </div>
               <div class="col-sm-6">
-                <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
+                <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Clients</span></a>
                 <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
               </div>
             </div>
@@ -143,7 +135,7 @@
                   </span>
                 </th>
                 <th>Name</th>
-                <th>Email</th>
+                <th>CIN</th>
                 <th>Address</th>
                 <th>Phone</th>
                 <th>Actions</th>
@@ -263,7 +255,7 @@
                     <input type="text" class="form-control" required>
                   </div>
                   <div class="form-group">
-                    <label>Email</label>
+                    <label>CIN</label>
                     <input type="email" class="form-control" required>
                   </div>
                   <div class="form-group">
@@ -299,7 +291,7 @@
                     <input type="text" class="form-control" required>
                   </div>
                   <div class="form-group">
-                    <label>Email</label>
+                    <label>CIN</label>
                     <input type="email" class="form-control" required>
                   </div>
                   <div class="form-group">

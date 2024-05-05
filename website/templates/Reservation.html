@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='Reservation.css') }}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="{{ url_for('static', filename='gestion.css') }}""> 
+
 
 </head>
 <body>
@@ -23,21 +23,28 @@
       </div>
     </div>
     <ul class="sidebar-list">
-      <li class="sidebar-list-item active">
-        <a href="#">
+      <li class="sidebar-list-item">
+        <a href="{{ url_for('views.managerHome') }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           <span>Home</span>
         </a>
       </li>
       <li class="sidebar-list-item">
-        <a href="{{ url_for('views.profile') }}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0m-2 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0"/><path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1M3 12c0 2.09.713 4.014 1.908 5.542A8.986 8.986 0 0 1 12.065 14a8.984 8.984 0 0 1 7.092 3.458A9 9 0 1 0 3 12m9 9a8.963 8.963 0 0 1-5.672-2.012A6.992 6.992 0 0 1 12.065 16a6.991 6.991 0 0 1 5.689 2.92A8.964 8.964 0 0 1 12 21"/></g></svg>
-          <span>Profile</span>
+        <a href="{{ url_for('views.clients') }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0m-2 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0"/><path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1M3 12c0 2.09.713 4.014 1.908 5.542A8.986 8.986 0 0 1 12.065 14a8.984 8.984 0 0 1 7.092 3.458A9 9 0 1 0 3 12m9 9a8.963 8.963 0 0 1-5.672-2.012A6.992 6.992 0 0 1 12.065 16a6.991 6.991 0 0 1 5.689 2.92A8.964 8.964 0 0 1 12 21"/></g></svg>
+          <span>Clients</span>
+        </a>
+      </li>
+      <li class="sidebar-list-item active">
+        <a href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 2048 2048"><path fill="currentColor" d="M896 512v128H512V512zM512 896V768h384v128zm0 256v-128h256v128zM384 512v128H256V512zm0 256v128H256V768zm-128 384v-128h128v128zM128 128v1792h640v128H0V0h1115l549 549v219h-128V640h-512V128zm1024 91v293h293zm640 805h256v1024H896V1024h256V896h128v128h384V896h128zm128 896v-512h-896v512zm0-640v-128h-896v128z"/></svg>
+          <span>Reservations</span>
         </a>
       </li>
       <li class="sidebar-list-item">
         <a href="{{ url_for('views.signin') }}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M3 3h8V1H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H3z"/><path fill="currentColor" d="M13 5v4H5v2h8v4l6-5z"/></svg>         <span>Log out</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" d="M3 3h8V1H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H3z"/><path fill="currentColor" d="M13 5v4H5v2h8v4l6-5z"/></svg>
+            <span>Log out</span>
         </a>
       </li>
       <li class="sidebar-list-item">
@@ -96,21 +103,21 @@
               <div class="box bg-primary">
                 <i class="fa fa-eye"></i>
                 <h3>5,154</h3>
-                <p class="lead">Manager</p>
+                <p class="lead">Total Reservation</p>
               </div>
             </div>
             <div class="col-md-3">
               <div class="box danger">
                 <i class="fa fa-user-o"></i>
                 <h3>245</h3>
-                <p class="lead">Car</p>
+                <p class="lead">Confermed Reservation</p>
               </div>
             </div>
             <div class="col-md-3">
               <div class="box warning">
                 <i class="fa fa-shopping-cart"></i>
                 <h3>5,154</h3>
-                <p class="lead">Reservation</p>
+                <p class="lead">Pending Reservation</p>
               </div>
             </div>
       
@@ -125,10 +132,10 @@
           <div class="table-title">
             <div class="row">
               <div class="col-sm-6">
-                <h2>Manage <b>Employees</b></h2>
+                <h2>Manage <b>Reservation</b></h2>
               </div>
               <div class="col-sm-6">
-                <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
+                <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Reservation</span></a>
                 <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
               </div>
             </div>
@@ -142,11 +149,12 @@
                     <label for="selectAll"></label>
                   </span>
                 </th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Phone</th>
+                <th>Client's Name</th>
+                <th>Car's Name</th>
+                <th>Duration</th>
+                <th>Price</th>
                 <th>Actions</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -162,8 +170,11 @@
                 <td>89 Chiaroscuro Rd, Portland, USA</td>
                 <td>(171) 555-2222</td>
                 <td>
-                  <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                  <!-- <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a> -->
                   <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                  <a href="#viewEmployeeModal" class="view" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="View Details">&#xE417;</i></a>
+                  <a href="#confirmEmployeeModal" class="confirm" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Confirmed">&#xE5CA;</i></a>
+              </td>
                 </td>
               </tr>
               <tr>
@@ -345,10 +356,35 @@
   </div>
 </div>
 
+<!-- Add Modal HTML for Confirmation -->
+<div id="confirmEmployeeModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm Employee</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Employee Confirmed Successfully!</p>
+                <div id="confirmationLabel" style="display: none;">
+                    <p>This employee has been confirmed.</p>
+                    <a href="#" class="btn btn-primary" id="downloadButton" download>Download</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Button to close the modal -->
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="confirmDownload">Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- partial -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
   <script>
 
     document.querySelector(".jsFilter").addEventListener("click", function () {
@@ -399,8 +435,17 @@
             $("#selectAll").prop("checked", false);
           }
         });
-      });
 
+         // Handle the "Confirmed" action
+    $('.confirm').click(function(){
+        // Show confirmation label
+        // Replace 'confirmationLabel' with the ID or class of the label you want to display
+        $('#confirmationLabel').show();
+
+        // Provide an option to download the employee's profile
+        // You can add a button or link to trigger the download
+    });
+      });
 
   </script>
 

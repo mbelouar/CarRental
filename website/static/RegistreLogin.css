@@ -252,3 +252,20 @@ form {
 	text-align: left;
 }
 
+.cont
+{
+	display: flex;
+}
+
+.msg_error
+  {
+    color: #d80202;
+	font-size:medium;
+	font-weight: 500;
+	font-family:Verdana, Geneva, Tahoma, sans-serif;
+	width: 550px;
+	display: flex;
+	height: 70px;
+	justify-content: center;
+	align-items: center;
+  }

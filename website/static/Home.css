@@ -40,18 +40,18 @@ body, html {
 }
 
 body {
+  overflow: hidden;
   font-family: "Poppins", sans-serif;
   background-color: var(--app-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* overflow: hidden; Disable scrolling */
 }
 
 .app-container {
   border-radius: 4px;
   width: 100%;
-  height: 150vh;
-  /* max-height: 100%; */
+  height: 100%;
+  max-height: 100%;
   max-width: 1280px;
   display: flex;
   overflow: hidden;
@@ -61,7 +61,6 @@ body {
 }
 
 .sidebar {
-  height: 150vh;
   flex-basis: 200px;
   max-width: 200px;
   flex-shrink: 0;
@@ -183,7 +182,7 @@ body {
 .app-content {
   padding: 16px;
   background-color: var(--app-bg);
-  height: 150vh;
+  height: 100%;
   flex: 1;
   max-height: 100%;
   display: flex;
@@ -497,19 +496,19 @@ body {
   border-radius: 50%;
   margin-right: 4px;
 }
-.status.active {
+.status.Available {
   color: #2ba972;
   background-color: rgba(43, 169, 114, 0.2);
 }
-.status.active:before {
+.status.Available:before {
   background-color: #2ba972;
 }
-.status.disabled {
-  color: #59719d;
-  background-color: rgba(89, 113, 157, 0.2);
+.status.Rented {
+  color: #ea3705;
+  background-color: rgba(230, 90, 30, 0.2);
 }
-.status.disabled:before {
-  background-color: #59719d;
+.status.Rented:before {
+  background-color: #ea3705;
 }
 
 .gridView {
@@ -664,9 +663,9 @@ body {
     overflow: hidden;
     border-radius: 3px;
     margin-bottom: 25px;
-    max-width: 300px; 
+    max-width: 400px; 
     margin: 0 auto; 
-    margin-right: -170px;
+    margin-right: -190px;
     
 
   }
@@ -685,6 +684,11 @@ body {
     width: 70px;
     font-size: 22px;
     padding: 15px;
+
+
+
+
+
     top: -25px;
     left: -25px;
     background-color: rgba(255, 255, 255, 0.15);
@@ -693,6 +697,20 @@ body {
     border-radius: 50%;
   }
   
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   .main-color {
     color: #ffc107
   }
@@ -700,6 +718,8 @@ body {
   .danger {background-color: #d9534f}
   .success {background-color: #5cb85c}
   .inf {background-color: #5bc0de}
+  
+  
 
 
   

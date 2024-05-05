@@ -22,19 +22,50 @@ def adminHome():
 def profile():
     return render_template('editProfil.html')
 
-@views.route('/', methods=('GET', 'POST'))
+@views.route('/managerDashboard')
+def managerHome():
+    return render_template("ManagerDashboard.html")
+
+@views.route('/reservation')
+def reservation():
+    return render_template("Reservation.html")
+
+@views.route('/clients')
+def clients():
+    return render_template("Clients.html")
+
+
+@views.route('/', methods=['GET', 'POST'])
 def signin():
-    # Define or obtain the `feedback` variable
-    # feedback = {'type': 'register', 'data': {'firstname': 'John'}}
-    
-    # Pass `feedback` to the template
-    return render_template('signin.html')
+    error_message = None  # Initialize error_message as None initially
+
+    if request.method == "POST":
+        sign_email = request.form['sign_email']
+        sign_password = request.form['sign_password']
+        sign_profile = request.form['sign_profile']
+
+        user = users.find_one({'email': sign_email})
+        # print(sign_email)
+        # print(user['email'])
+        print(sign_profile)
+        # print(user['profile'])
+        if user and user['password'] == sign_password and user['profile'] == sign_profile == "Admin":
+            # Authentication successful
+            return redirect(url_for('views.adminHome'))  # Redirect to dashboard or another page
+        elif user and user['password'] == sign_password and user['profile'] == sign_profile ==  "Manager":
+            # Authentication successful
+            return redirect(url_for('views.managerHome'))  # Redirect to dashboard or another page
+        elif user and user['password'] != sign_password:
+            error_message = "Incorrect password. Please try again."
+        elif user and user['profile'] != sign_profile:
+            error_message = "Incorrect profile. Please try again."
+
+    # Pass error_message to the template when rendering it
+    return render_template('signin.html', error_message=error_message)
 
 @views.route('/registre', methods=('GET', 'POST'))
 def registre():
-    # Define or obtain the `feedback` variable
-    # feedback = {'type': 'register', 'data': {'firstname': 'John'}}
-    # print(request.method)
+
     if request.method == "POST":   # if the request method is post, then insert the todo document in todos collection
         name = request.form['fullname']
         phone = request.form['phone']
@@ -42,10 +73,19 @@ def registre():
         adresse = request.form['address']
         profile = request.form['profile']
         password = request.form['password']
-        users.insert_one({'name': name, 'phone': phone, 'email': email, 'adresse': adresse, 'profile': profile, 'password': password})
-        # return redirect(url_for('signin')) # redirect the user to home page
+        passwordChck = request.form['passwordChck']
+        
+        users.insert_one({'name': name, 
+                          'phone': phone, 
+                          'email': email, 
+                          'adresse': adresse, 
+                          'profile': profile, 
+                          'password': password, 
+                          'passwordChck': passwordChck})
+        
+        return redirect(url_for('views.signin')) # redirect the user to home page
 
     # Pass `feedback` to the template
-    feedback = {'type': 'register', 'data': {'firstname': "name"}}
+    feedback = {'type': 'register', 'data': {'firstname': ''}}
     return render_template("registre.html", feedback=feedback)
 
