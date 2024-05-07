@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -13,6 +14,7 @@
 
 </head>
 <body>
+
 <!-- partial:index.partial.html -->
 <div class="app-container">
     
@@ -30,7 +32,7 @@
         </a>
       </li>
       <li class="sidebar-list-item">
-        <a href="{{ url_for('views.profile') }}">
+        <a href="{{ url_for('views.profile') }}?id={{user_data.id}}">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 9a4 4 0 1 1-8 0a4 4 0 0 1 8 0m-2 0a2 2 0 1 1-4 0a2 2 0 0 1 4 0"/><path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11s11-4.925 11-11S18.075 1 12 1M3 12c0 2.09.713 4.014 1.908 5.542A8.986 8.986 0 0 1 12.065 14a8.984 8.984 0 0 1 7.092 3.458A9 9 0 1 0 3 12m9 9a8.963 8.963 0 0 1-5.672-2.012A6.992 6.992 0 0 1 12.065 16a6.991 6.991 0 0 1 5.689 2.92A8.964 8.964 0 0 1 12 21"/></g></svg>
           <span>Profile</span>
         </a>
@@ -55,35 +57,34 @@
   </div>
   <div class="app-content">
 
-
-
-
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
     
-    <div class="app-content-header">
-
-
-
-
-        
-     
-      <button class="mode-switch" title="Switch Theme">
-        <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
-          <defs></defs>
-          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
-        </svg>
-      </button>
-    </div>
     <div class="app-content-actions">
       <input class="search-bar" placeholder="Search..." type="text">
       <div class="app-content-actions-wrapper">
         <div class="filter-button-wrapper">
           <div class="filter-menu">
- 
-  
-       
           </div>
         </div>
-
+      </div>
+      <div class="app-content-header">
+        <button class="mode-switch" title="Switch Theme">
+          <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+            <defs></defs>
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -94,21 +95,24 @@
             <!-- Statistics cards -->
             <div class="col-md-3">
               <div class="box bg-primary">
-                <i class="fa fa-eye"></i>
-                <h3>5,154</h3>
-                <p class="lead">Manager</p>
+                  <i class="fa fa-user-o"></i>
+                  <h3>{{ manager_count }}</h3>
+                  <p class="lead">Manager{% if manager_count != 1 %}s{% endif %}</p>
               </div>
             </div>
+          
             <div class="col-md-3">
               <div class="box danger">
-                <i class="fa fa-user-o"></i>
+                <i class="fa fa-car"></i>
                 <h3>245</h3>
                 <p class="lead">Car</p>
               </div>
             </div>
+            
+
             <div class="col-md-3">
               <div class="box warning">
-                <i class="fa fa-shopping-cart"></i>
+                <i class="fa fa-calendar-check-o"></i>
                 <h3>5,154</h3>
                 <p class="lead">Reservation</p>
               </div>
@@ -125,23 +129,23 @@
           <div class="table-title">
             <div class="row">
               <div class="col-sm-6">
-                <h2>Manage <b>Employees</b></h2>
+                <h2>Manage <b>Managers</b></h2>
               </div>
               <div class="col-sm-6">
-                <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
-                <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
+                <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Manager</span></a>
+                <!-- <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a> -->
               </div>
             </div>
           </div>
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th>
+                <!-- <th>
                   <span class="custom-checkbox">
                     <input type="checkbox" id="selectAll">
                     <label for="selectAll"></label>
                   </span>
-                </th>
+                </th> -->
                 <th>Name</th>
                 <th>Email</th>
                 <th>Address</th>
@@ -149,231 +153,144 @@
                 <th>Actions</th>
               </tr>
             </thead>
+
             <tbody>
+              {% for manager in managers %}
               <tr>
-                <td>
-                  <span class="custom-checkbox">
-                    <input type="checkbox" id="checkbox1" name="options[]" value="1">
-                    <label for="checkbox1"></label>
-                  </span>
-                </td>
-                <td>Thomas Hardy</td>
-                <td>thomashardy@mail.com</td>
-                <td>89 Chiaroscuro Rd, Portland, USA</td>
-                <td>(171) 555-2222</td>
-                <td>
-                  <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                  <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                <td>{{ manager.name }}</td>
+                <td>{{ manager.email }}</td>
+                <td>{{ manager.address }}</td>
+                <td>{{ manager.phone }}</td>
+                <td class="actions">
+                  <a href="#editEmployeeModal" class="edit" data-name="{{manager.name}}" data-email="{{manager.email}}" data-address="{{manager.address}}" data-phone="{{manager.phone}}" data-id="{{manager._id}}" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                  <a href="#deleteEmployeeModal" class="delete" data-id="{{manager._id}}" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                 </td>
               </tr>
-              <tr>
-                <td>
-                    <span class="custom-checkbox">
-                        <input type="checkbox" id="checkbox2" name="options[]" value="1">
-                        <label for="checkbox2"></label>
-                    </span>
-                </td>
-                <td>Dominique Perrier</td>
-                <td>dominiqueperrier@mail.com</td>
-                <td>Obere Str. 57, Berlin, Germany</td>
-                <td>(313) 555-5735</td>
-                <td>
-                    <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                    <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span class="custom-checkbox">
-                        <input type="checkbox" id="checkbox3" name="options[]" value="1">
-                        <label for="checkbox3"></label>
-                    </span>
-                </td>
-                <td>Maria Anders</td>
-                <td>mariaanders@mail.com</td>
-                <td>25, rue Lauriston, Paris, France</td>
-                <td>(503) 555-9931</td>
-                <td>
-                    <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                    <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span class="custom-checkbox">
-                        <input type="checkbox" id="checkbox4" name="options[]" value="1">
-                        <label for="checkbox4"></label>
-                    </span>
-                </td>
-                <td>Fran Wilson</td>
-                <td>franwilson@mail.com</td>
-                <td>C/ Araquil, 67, Madrid, Spain</td>
-                <td>(204) 619-5731</td>
-                <td>
-                    <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                    <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span class="custom-checkbox">
-                        <input type="checkbox" id="checkbox5" name="options[]" value="1">
-                        <label for="checkbox5"></label>
-                    </span>
-                </td>
-                <td>Martin Blank</td>
-                <td>martinblank@mail.com</td>
-                <td>Via Monte Bianco 34, Turin, Italy</td>
-                <td>(480) 631-2097</td>
-                <td>
-                    <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                    <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                </td>
-            </tr>
-            
-              <!-- More table rows -->
+              {% endfor %}
             </tbody>
+            
           </table>
-          <div class="clearfix">
-            <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-            <ul class="pagination">
-              <li class="page-item disabled"><a href="#">Previous</a></li>
-              <li class="page-item"><a href="#" class="page-link">1</a></li>
-              <li class="page-item"><a href="#" class="page-link">2</a></li>
-              <li class="page-item active"><a href="#" class="page-link">3</a></li>
-              <li class="page-item"><a href="#" class="page-link">4</a></li>
-              <li class="page-item"><a href="#" class="page-link">5</a></li>
-              <li class="page-item"><a href="#" class="page-link">Next</a></li>
-            </ul>
-          </div>
         </div>
       </div>
       <!-- Add Modal HTML -->
       <div id="addEmployeeModal" class="modal fade">
-          <div class="modal-dialog">
+        <div class="modal-dialog">
             <div class="modal-content">
-              <form>
-                <div class="modal-header">
-                  <h4 class="modal-title">Add Employee</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Address</label>
-                    <textarea class="form-control" required></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label>Phone</label>
-                    <input type="text" class="form-control" required>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                  <input type="submit" class="btn btn-success" value="Add">
-                </div>
-              </form>
+                <form id="addEmployeeForm" action="/add_manager" method="POST">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add Manager</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea id="address" name="address" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" id="phone" name="phone" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordCheck">Confirm Password</label>
+                            <input type="password" id="passwordCheck" name="passwordCheck" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <input type="submit" class="btn btn-success" value="Add">
+                    </div>
+                </form>
             </div>
-          </div>
         </div>
+      </div>
+    
       
       <!-- Edit Modal HTML -->
       <div id="editEmployeeModal" class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-              <form>
+              <form id="editEmployeeForm" action="/edit_manager" method="POST">
                 <div class="modal-header">
-                  <h4 class="modal-title">Edit Employee</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Edit Manager</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                  <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Address</label>
-                    <textarea class="form-control" required></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label>Phone</label>
-                    <input type="text" class="form-control" required>
-                  </div>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" name="phone" class="form-control" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                  <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                  <input type="submit" class="btn btn-info" value="Save">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="submit" class="btn btn-success" value="Update">
                 </div>
-              </form>
+            </form>
             </div>
           </div>
         </div>
     </div>
-        <!-- Delete Modal HTML -->
-        <div id="deleteEmployeeModal" class="modal fade">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <form>
-                <div class="modal-header">
-                  <h4 class="modal-title">Delete Employee</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                  <p>Are you sure you want to delete these Records?</p>
-                  <p class="text-warning"><small>This action cannot be undone.</small></p>
-                </div>
-                <div class="modal-footer">
-                  <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                  <input type="submit" class="btn btn-danger" value="Delete">
-                </div>
-              </form>
-            </div>
+
+      <!-- Delete Modal HTML --> 
+      <div id="deleteEmployeeModal" class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form method="post" action="/delete_manager">
+              <div class="modal-header">
+                <h4 class="modal-title">Delete Manager</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to delete these Records?</p>
+                <p class="text-warning"><small>This action cannot be undone.</small></p>
+              </div>
+              <div class="modal-footer">
+                <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                <input type="submit" class="btn btn-danger" value="Delete">
+              </div>
+            </form>
           </div>
         </div>
+      </div>
+
+      
     </div>
   </div>
 </div>
 
 
-<!-- partial -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script>
 
-    document.querySelector(".jsFilter").addEventListener("click", function () {
-        document.querySelector(".filter-menu").classList.toggle("active");
-      });
-      
-      document.querySelector(".grid").addEventListener("click", function () {
-        document.querySelector(".list").classList.remove("active");
-        document.querySelector(".grid").classList.add("active");
-        document.querySelector(".products-area-wrapper").classList.add("gridView");
-        document
-          .querySelector(".products-area-wrapper")
-          .classList.remove("tableView");
-      });
-      
-      document.querySelector(".list").addEventListener("click", function () {
-        document.querySelector(".list").classList.add("active");
-        document.querySelector(".grid").classList.remove("active");
-        document.querySelector(".products-area-wrapper").classList.remove("gridView");
-        document.querySelector(".products-area-wrapper").classList.add("tableView");
-      });
+  <script>
       
       var modeSwitch = document.querySelector('.mode-switch');
-      modeSwitch.addEventListener('click', function () {                      document.documentElement.classList.toggle('light');
-       modeSwitch.classList.toggle('active');
+      modeSwitch.addEventListener('click', function () {
+        document.documentElement.classList.toggle('light');
+        modeSwitch.classList.toggle('active');
       });
       
       
@@ -401,7 +318,40 @@
         });
       });
 
+      const deleteBtns = Array.from(document.querySelectorAll(".actions .delete"))
+      deleteBtns.forEach(el => {
+        el.onclick = () => {
+          const form = document.querySelector("#deleteEmployeeModal form")
+          form.setAttribute('action', `/${el.dataset.id}/delete_manager`)          
+        }
+      })
+      
+      const editBtns = Array.from(document.querySelectorAll(".actions .edit"))
+      editBtns.forEach(el => {
+        el.onclick = () => {
+          const form = document.querySelector("#editEmployeeModal form")
+          form.setAttribute('action', `/${el.dataset.id}/edit_manager`)
+          
+          const nameInput = form.querySelector("input[name='name']")
+          const emailInput = form.querySelector("input[name='email']")
+          const addressInput = form.querySelector("textarea[name='address']")
+          const phoneInput = form.querySelector("input[name='phone']")
 
+          nameInput.value = el.dataset.name
+          emailInput.value = el.dataset.email
+          addressInput.value = el.dataset.address
+          phoneInput.value = el.dataset.phone
+        }
+      })
+
+  </script>
+  <script>
+    // Close the alert message when the close button (X) is clicked
+    document.querySelectorAll('.alert .close').forEach(function(button) {
+      button.addEventListener('click', function() {
+        this.parentElement.style.display = 'none'; // Hide the parent alert element
+      });
+    });
   </script>
 
 </body>

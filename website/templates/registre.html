@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Your Title</title>
     
     <!-- Link your CSS file -->
@@ -29,11 +30,26 @@
         </transition>
 
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+    {% endif %}
+    {% endwith %}
 
     <!-- Register Template -->
     <template id="registerTemplate">
         <form method="post" ref='form' action="" class='register-form'>
-            <h2>Register</h2>
+            <div class="tit-pos">
+                <h2>Register</h2>
+            </div>
+       
             <div class="form-group" >
                 <label for="fullname">Name</label>
                 <input required type="text" v-model.trim='user.fullname' name="fullname" id='fullname' placeholder="Full name">
@@ -67,7 +83,7 @@
             </div>
             <div class="form-group">
                 <label for="passwordcheck">Retype password</label>
-                <input name="passwordChck" required type="password" v-model='user.passwordChck' placeholder="Confirme your password" id='passwordcheck'>
+                <input name="passwordCheck" required type="password" v-model='user.passwordCheck' placeholder="Confirme your password" id='passwordcheck'>
             </div>
             <input type="submit" :disabled='!isFormValid' value='Register'>
         </form>
@@ -89,4 +105,13 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 <script src="{{ url_for('static', filename="registre.js") }}" ></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+    // Close the alert message when the close button (X) is clicked
+    document.querySelectorAll('.alert .close').forEach(function(button) {
+      button.addEventListener('click', function() {
+        this.parentElement.style.display = 'none'; // Hide the parent alert element
+      });
+    });
+  </script>
 </html> 

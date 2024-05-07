@@ -47,8 +47,29 @@ body {
   /* overflow: hidden; Disable scrolling */
 }
 
+.alert.show {
+  opacity: 1;
+  position: relative;
+  padding: .75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  display: block;
+}
+.alert.show .close {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  padding: .75rem 1.25rem !important;
+  color: inherit !important;
+}
+
 .app-container {
-  border-radius: 4px;
+  /* border-radius: 4px; */
   width: 100%;
   height: 150vh;
   /* max-height: 100%; */
@@ -656,20 +677,16 @@ body {
     margin-top: 100px;
   }
   .statis .box {
-
-
-
     position: relative;
     padding: 10px; 
     overflow: hidden;
     border-radius: 3px;
     margin-bottom: 25px;
-    max-width: 300px; 
+    max-width: 260px !important; 
     margin: 0 auto; 
-    margin-right: -170px;
-    
-
+    margin-right: -150px !important;
   }
+  
   .statis .box h3:after {
     content: "";
     height: 2px;
@@ -703,4 +720,12 @@ body {
 
 
   
-  
+  .statics-center{
+    margin-top: -70px !important;
+  }
+
+
+.editcenter{
+  display: flex;
+  margin-top: 60px;
+}

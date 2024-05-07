@@ -16,7 +16,7 @@
 body {
 	/* padding: 0; */
 	/* margin: 0; */
-	/* font-family: 'PT Sans', sans-serif; */
+	font-family: 'PT Sans', sans-serif;
 	background: #101827;
 }
 
@@ -28,8 +28,9 @@ body {
 	top:50%;
 	left:50%;
 	width:96%;
+	height: 96% !important;
 	transform:translate(-50%, -50%);
-	padding: 2em 3em 1em;
+	padding: 5em 3em 1em;
 	background:white;
 	overflow: hidden;
 	box-shadow: 0 10px 6px -6px rgba(0,0,0,.2);
@@ -65,6 +66,10 @@ body {
 	}
 }
 
+
+
+
+
 .form {
 	&-enter {
 		transform:translateY(-1em);
@@ -83,13 +88,18 @@ body {
 }
 
 form h2, header h2 {
+	margin-top: 80px;
 	text-align: center;
 	color:#f0ad4e;
 }
 
-.register-form, .signin-form {
-	margin: 2em 0;
+.register-form {
+	margin: -4.5em 1em;
 	padding:1em;
+	margin-top: -100px !important;
+}
+.tit-pos{
+	margin-top: 10px !important;
 }
 
 .form-group {
@@ -98,7 +108,7 @@ form h2, header h2 {
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
-	padding:8px;
+	padding:0px !important;
 	
 	label {
 		flex:1;

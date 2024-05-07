@@ -13,7 +13,7 @@ const registerComponent = {
                 address:'',
                 profile:'',
                 password:'',
-                passwordChck:''
+                passwordCheck:''
             }
         }
     },
@@ -26,7 +26,7 @@ const registerComponent = {
                 this.isValid('address') &&
                 this.isValid('profile') &&
                 this.isValid('password') && 
-                this.isValid('passwordChck')
+                this.isValid('passwordCheck')
             )
         }
     },
@@ -48,8 +48,8 @@ const registerComponent = {
                 case 'password':
                     return this.user.password.length >= 6
                     break
-                case "passwordChck":
-                    return this.user.password === this.user.passwordChck
+                case "passwordCheck":
+                    return this.user.password === this.user.passwordCheck
                     break
                 case "profile":
                     return !!this.user.profile // Check if profile is selected
@@ -64,7 +64,7 @@ const registerComponent = {
             this.user.address = ''
             this.user.profile = ''
             this.user.password = ''
-            this.user.passwordChck = ''
+            this.user.passwordCheck = ''
             
         },
         onSubmit () {
@@ -76,7 +76,7 @@ const registerComponent = {
     mounted () {
         let element = this.$el.querySelector('#passwordcheck')
         element.addEventListener('blur', () => {
-            if (!this.isValid('passwordChck')) {
+            if (!this.isValid('passwordCheck')) {
                 element.classList.add('invalid')
             } else {
                 element.classList.remove('invalid')
