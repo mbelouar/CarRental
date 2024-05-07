@@ -15,6 +15,7 @@ db = client.RentCars_db # creating your flask database using your mongo client
 # collections
 admins = db.admins
 managers = db.managers
+clients = db.clients
 
 
 @views.route('/adminDashboard')
@@ -48,10 +49,6 @@ def managerHome():
 @views.route('/reservation')
 def reservation():
     return render_template("Reservation.html")
-
-@views.route('/clients')
-def clients():
-    return render_template("Clients.html")
 
 
 @views.route('/', methods=['GET', 'POST'])
@@ -221,3 +218,61 @@ def edit_admin(id):
 
     # Handle invalid HTTP methods (though this route is configured for POST only)
     return "Method Not Allowed", 405
+
+@views.route('/clients', methods=['POST', 'GET'])
+def clients():
+    user_data = session.get('user_data')
+    if not user_data:
+        return redirect(url_for("views.signin"))  # Redirect if user is not authenticated
+
+    # Access the clients collection directly using db
+    all_clients = db.clients.find()
+    client_count = db.clients.count_documents({})
+
+    return render_template("Clients.html", clients=all_clients, client_count=client_count, user_data=user_data)
+
+
+@views.route('/add_client', methods=['POST'])
+def add_client():
+    if request.method == 'POST':
+        name = request.form['name']
+        cin = request.form['cin']
+        address = request.form['address']
+        phone = request.form['phone']
+
+        # Create a new client document
+        new_client = {
+            'name': name,
+            'cin': cin,
+            'phone': phone,
+            'address': address
+        }
+
+        # Insert the new client document into the database
+        db.clients.insert_one(new_client)
+        flash("Client added successfully!", "success")
+
+        return redirect(url_for("views.clients"))  # Redirect to the homepage after adding manager
+
+    # Handle invalid HTTP methods (though this route is configured for POST only)
+    return "Method Not Allowed", 405
+
+@views.route('/<string:id>/edit_client/', methods=['POST'])
+def edit_client(id):
+    if request.method == 'POST':
+
+        name = request.form['name']
+        cin = request.form['cin']
+        address = request.form['address']
+        phone = request.form['phone']
+
+        db.clients.update_one({"_id": ObjectId(id)}, {"$set": {'name': name, 'email': cin, 'address': address, 'phone': phone}})
+        flash("Client updated successfully!", "success")
+        return redirect(url_for('views.clients'))
+    
+@views.route('/<string:id>/delete_client/', methods=['POST'])
+def delete_client(id):
+    if request.method == 'POST':
+        db.clients.delete_one({"_id": ObjectId(id)})
+        flash("Client deleted successfully!", "success")
+        return redirect(url_for('views.clients'))
