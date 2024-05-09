@@ -16,6 +16,8 @@ db = client.RentCars_db # creating your flask database using your mongo client
 admins = db.admins
 managers = db.managers
 clients = db.clients
+reservations = db.reservations
+cars = db.cars
 
 
 @views.route('/adminDashboard')
@@ -28,9 +30,11 @@ def adminHome():
     
     # Count the number of managers
     manager_count = managers.count_documents({})
+    car_count = cars.count_documents({})
+    reservation_count = reservations.count_documents({})
     
     # Pass the managers data and manager count to the template
-    return render_template("AdminDashboard.html", managers=all_managers, manager_count=manager_count, user_data=user_data)
+    return render_template("AdminDashboard.html", managers=all_managers, manager_count=manager_count, user_data=user_data, car_count=car_count, reservation_count=reservation_count)
 
 
 @views.route('/profile')
@@ -44,11 +48,13 @@ def profile():
 
 @views.route('/managerDashboard')
 def managerHome():
-    return render_template("ManagerDashboard.html")
+    user_data = session.get('user_data')
+    if not user_data:
+        redirect(url_for("views.signin"))
 
-@views.route('/reservation')
-def reservation():
-    return render_template("Reservation.html")
+    all_cars = db.cars.find()
+
+    return render_template("ManagerDashboard.html", user_data=user_data, cars=all_cars, filter={'category':'all','status':'all'})
 
 
 @views.route('/', methods=['GET', 'POST'])
@@ -266,7 +272,7 @@ def edit_client(id):
         address = request.form['address']
         phone = request.form['phone']
 
-        db.clients.update_one({"_id": ObjectId(id)}, {"$set": {'name': name, 'email': cin, 'address': address, 'phone': phone}})
+        db.clients.update_one({"_id": ObjectId(id)}, {"$set": {'name': name, 'cin': cin, 'address': address, 'phone': phone}})
         flash("Client updated successfully!", "success")
         return redirect(url_for('views.clients'))
     
@@ -276,3 +282,136 @@ def delete_client(id):
         db.clients.delete_one({"_id": ObjectId(id)})
         flash("Client deleted successfully!", "success")
         return redirect(url_for('views.clients'))
+    
+@views.route('/reservation')
+def reservation():
+    user_data = session.get('user_data')
+    if not user_data:
+        return redirect(url_for("views.signin"))  # Redirect if user is not authenticated
+
+    # Access the clients collection directly using db
+    all_reservations = db.reservations.find()
+    reservation_count = db.reservations.count_documents({})
+    # Query confirmed reservations count
+    confirmed_count = db.reservations.count_documents({'status': 'Confirmed'})
+
+    # Query pending reservations count (assuming 'pending' is another status)
+    pending_count = db.reservations.count_documents({'status': 'Not Confirmed'})
+
+    return render_template("Reservation.html", reservations=all_reservations, reservation_count=reservation_count, user_data=user_data, confirmed_count=confirmed_count, pending_count=pending_count)
+
+@views.route('/add_reservation', methods=['POST'])
+def add_reservation():
+    if request.method == 'POST':
+        carId = request.form['carId']
+        clientName = request.form['clientName']
+        duration = request.form['duration']
+        price = request.form['price']
+
+        # Create a new reservation document
+        new_reservation = {
+            'carId': carId,
+            'clientName': clientName,
+            'price': price,
+            'duration': duration,
+            'status': 'Not Confirmed'
+        }
+
+        # Insert the new reservation document into the database
+        db.reservations.insert_one(new_reservation)
+        flash("Reservation added successfully!", "success")
+
+        return redirect(url_for("views.reservation"))  # Redirect to the homepage after adding manager
+
+    # Handle invalid HTTP methods (though this route is configured for POST only)
+    return "Method Not Allowed", 405
+
+@views.route('/<string:id>/edit_reservation/', methods=['POST'])
+def edit_reservation(id):
+    if request.method == 'POST':
+
+        carId = request.form['carId']
+        clientName = request.form['clientName']
+        duration = request.form['duration']
+        price = request.form['price']
+
+        db.reservations.update_one({"_id": ObjectId(id)}, {"$set": {'carId': carId, 'clientName': clientName, 'duration': duration, 'price': price}})
+        flash("Reservation updated successfully!", "success")
+        return redirect(url_for('views.reservation'))
+    
+@views.route('/<string:id>/delete_reservation/', methods=['POST'])
+def delete_reservation(id):
+    if request.method == 'POST':
+        db.reservations.delete_one({"_id": ObjectId(id)})
+        flash("Reservation deleted successfully!", "success")
+        return redirect(url_for('views.reservation'))
+    
+@views.route('/<string:id>/confirm_reservation', methods=['POST'])
+def confirm_reservation(id):
+    if request.method == 'POST':
+        # Update reservation status to 'confirmed' in MongoDB
+        reservations.update_one({'_id': ObjectId(id)}, {'$set': {'status': 'Confirmed'}})
+
+        # Store the confirmed reservation ID in the session
+        session['confirmed_reservation_id'] = id
+
+        res = db.reservations.find_one({'_id': ObjectId(id)})
+        res_id = str(res['carId']) 
+
+        db.cars.update_one({"carid": res_id}, {"$set": {'status': "Rented"}})
+
+
+        flash("Reservation was confirmed successfully!", "success")
+        return redirect(url_for('views.reservation'))
+    
+@views.route('/add_car', methods=['POST'])
+def add_car():
+    if request.method == 'POST':
+        carname = request.form['carname']
+        category = request.form['category']
+        model = request.form['model']
+        carid = request.form['carid']
+        price = request.form['price']
+
+        # Create a new car document
+        new_car = {
+            'carname': carname,
+            'category': category,
+            'status': "Available",
+            'model': model,
+            'carid': carid,
+            'price': price
+        }
+
+        # Insert the new car document into the database
+        db.cars.insert_one(new_car)
+        flash("Car added successfully!", "success")
+
+        return redirect(url_for("views.managerHome"))  # Redirect to the homepage after adding manager
+
+    # Handle invalid HTTP methods (though this route is configured for POST only)
+    return "Method Not Allowed", 405
+
+@views.route('/apply_filter', methods=['POST'])
+def apply_filter():
+    if request.method == 'POST':
+        category = request.form['category']
+        status = request.form['status']
+
+        # Build the filter criteria based on selected category and status
+        filter_criteria = {}
+
+        if category and category != 'all':
+            filter_criteria['category'] = category
+        
+        if status and status != 'all':
+            filter_criteria['status'] = status
+
+        # Query MongoDB with the filter criteria
+        filtered_cars = db.cars.find(filter_criteria)
+
+        # Render the managerHome template with the filtered reservations
+        return render_template("ManagerDashboard.html", cars=filtered_cars, filter={'category':category,'status':status})
+    else:
+        # Handle other HTTP methods (e.g., GET) gracefully
+        return redirect(url_for('views.managerHome'))

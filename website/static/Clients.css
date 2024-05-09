@@ -49,6 +49,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.app-icon {
+  display: flex;
+  align-items: center;
+}
+
+.size-text{
+  font-size: 14.8px !important;
+
+}
+
+.table>caption+thead>tr:first-child>td, .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
+  font-family: math;
+  color: black;
+  font-size: medium;
+}
+
 .alert.show {
   opacity: 1;
   position: relative;
@@ -977,7 +993,7 @@ p {
 }
 .lead {
   margin-bottom: 20px;
-  font-size: 16px;
+  font-size: 21px;
   font-weight: 300;
   line-height: 1.4;
 }

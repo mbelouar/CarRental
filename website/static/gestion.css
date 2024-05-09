@@ -29,6 +29,12 @@ body {
 	.table-title .btn-group {
 		float: right;
 	}
+
+	.app-icon {
+		display: flex;
+		align-items: center;
+	  }
+	  
 	.table-title .btn {
 		color: #fff;
 		float: right;

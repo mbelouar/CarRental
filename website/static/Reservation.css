@@ -49,6 +49,46 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media (min-width: 768px) {
+  .lead {
+      font-family: "Varela Round";
+    }
+}
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+  font-family: "Varela Round";
+}
+
+.table>caption+thead>tr:first-child>td, .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
+  font-family: math;
+}
+
+.app-icon {
+  display: flex;
+  align-items: center;
+}
+
+.alert.show {
+  opacity: 1;
+  position: relative;
+  padding: .75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  display: block;
+}
+.alert.show .close {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  padding: .75rem 1.25rem !important;
+  color: inherit !important;
+}
+
 .app-container {
   width: 100%;
   height: 100%;
@@ -741,6 +781,7 @@ body {
 .table-title h2 {
     margin: 5px 0 0;
     font-size: 24px;
+    font-family: "Varela Round";
 }
 .table-title .btn-group {
     float: right;
@@ -764,6 +805,7 @@ body {
 .table-title .btn span {
     float: left;
     margin-top: 2px;
+    font-family: "Varela Round";
 }
 table.table tr th, table.table tr td {
     border-color: #e9e9e9;
