@@ -1,44 +1,63 @@
-# importing from flask module the Flask class, the render_template function, the request function, url_for 
-# and redirect function to redirect to index home page after updating the app database
 from flask import Flask, Blueprint, render_template, request, url_for, redirect, jsonify, flash, session
 from flask import current_app as app
-# Mongoclient is used to create a mongodb client, so we can connect on the localhost 
-# with the default port
-from pymongo import MongoClient
-# ObjectId function is used to convert the id string to an objectid that MongoDB can understand
 from bson.objectid import ObjectId
 # from main import app
 from website.commands import AddManagerCommand, DeleteManagerCommand, EditManagerCommand, Command
 
+from website.models import db, admins, managers, clients, cars, reservations, client
+
+from website.repository import ManagerRepository, CarRepository, ResRepository
 
 views = Blueprint('views', __name__)
 
-client = MongoClient('localhost', 27017)
-db = client.RentCars_db # creating your flask database using your mongo client 
-# collections
-admins = db.admins
-managers = db.managers
-clients = db.clients
-reservations = db.reservations
-cars = db.cars
+# client = MongoClient('localhost', 27017)
+# db = client.RentCars_db # creating your flask database using your mongo client 
+# # collections
+# admins = db.admins
+# managers = db.managers
+# clients = db.clients
+# reservations = db.reservations
+# cars = db.cars
 
+
+# @views.route('/adminDashboard')
+# def adminHome():
+#     user_data = session.get('user_data')
+#     if not user_data:
+#         redirect(url_for("views.signin"))
+#     # Fetch all managers from MongoDB
+#     all_managers = managers.find()
+    
+#     # Count the number of managers
+#     manager_count = managers.count_documents({})
+#     car_count = cars.count_documents({})
+#     reservation_count = reservations.count_documents({})
+    
+#     # Pass the managers data and manager count to the template
+#     return render_template("AdminDashboard.html", managers=all_managers, manager_count=manager_count, user_data=user_data, car_count=car_count, reservation_count=reservation_count)
 
 @views.route('/adminDashboard')
 def adminHome():
     user_data = session.get('user_data')
     if not user_data:
         redirect(url_for("views.signin"))
-    # Fetch all managers from MongoDB
-    all_managers = managers.find()
-    
+
+    # Instantiate ManagerRepository
+    manager_repository = ManagerRepository()
+    car_repository = CarRepository()
+    res_repository = ResRepository()
+    # Fetch all managers from the repository
+    all_managers = manager_repository.get_all_managers()
+    all_cars = car_repository.get_all_cars()
+    all_res = res_repository.get_all_reservations()
+
     # Count the number of managers
-    manager_count = managers.count_documents({})
-    car_count = cars.count_documents({})
-    reservation_count = reservations.count_documents({})
-    
+    manager_count = manager_repository.collection.count_documents({})
+    car_count = car_repository.collection.count_documents({})
+    reservation_count = res_repository.collection.count_documents({})
+
     # Pass the managers data and manager count to the template
     return render_template("AdminDashboard.html", managers=all_managers, manager_count=manager_count, user_data=user_data, car_count=car_count, reservation_count=reservation_count)
-
 
 @views.route('/profile')
 def profile():
@@ -312,7 +331,7 @@ def delete_client(id):
         db.clients.delete_one({"_id": ObjectId(id)})
         flash("Client deleted successfully!", "success")
         return redirect(url_for('views.clients'))
-    
+
 @views.route('/reservation')
 def reservation():
     user_data = session.get('user_data')
