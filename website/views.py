@@ -104,7 +104,7 @@ def signin():
 
 @views.route('/registre', methods=('GET', 'POST'))
 def registre():
-
+    
     if request.method == "POST":   # if the request method is post, then insert the todo document in todos collection
         name = request.form['fullname']
         phone = request.form['phone']
@@ -142,32 +142,27 @@ def registre():
 
 @views.route('/add_manager', methods=['POST'])
 def add_manager():
-    if request.method == 'POST':
-        add_manager_command = AddManagerCommand(request.form)
-        add_manager_command.execute()
-        flash("Manager added successfully!", "success")
-        return redirect(url_for("views.adminHome"))  # Redirect to the homepage after adding manager
-
-    return "Method Not Allowed", 405
+    command = AddManagerCommand(request.form)
+    return (manager_handler(command))
 
 @views.route('/<string:id>/delete_manager/', methods=['POST'])
 def delete_manager(id):
-    if request.method == 'POST':
-        delete_manager_command = DeleteManagerCommand(id)
-        delete_manager_command.execute()
-        flash("Manager deleted successfully!", "success")
-        return redirect(url_for('views.adminHome'))
-
-    return "Method Not Allowed", 405
+    command = DeleteManagerCommand(id)
+    return (manager_handler(command))
 
 @views.route('/<string:id>/edit_manager/', methods=['POST'])
 def edit_manager(id):
-    if request.method == 'POST':
-        edit_manager_command = EditManagerCommand(id, request.form)
-        edit_manager_command.execute()
-        flash("Manager updated successfully!", "success")
-        return redirect(url_for('views.adminHome'))
+    command = EditManagerCommand(id, request.form)
+    return (manager_handler(command))
 
+def manager_handler(cmd:Command, dest:str=url_for('views.adminHome')):
+    if request.method == 'POST':
+        ret = cmd.execute()
+        if ret:
+            flash("Operation Succeded", "success")
+        else
+            flash("Operation Failed!", "danger")
+        return redirect(dest)
     return "Method Not Allowed", 405
 
 # @views.route('/add_manager', methods=['POST'])
