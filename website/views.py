@@ -1,13 +1,15 @@
 # importing from flask module the Flask class, the render_template function, the request function, url_for 
 # and redirect function to redirect to index home page after updating the app database
 from flask import Flask, Blueprint, render_template, request, url_for, redirect, jsonify, flash, session
+from flask import current_app as app
 # Mongoclient is used to create a mongodb client, so we can connect on the localhost 
 # with the default port
 from pymongo import MongoClient
 # ObjectId function is used to convert the id string to an objectid that MongoDB can understand
 from bson.objectid import ObjectId
 # from main import app
-from website.commands import AddManagerCommand, DeleteManagerCommand, EditManagerCommand
+from website.commands import AddManagerCommand, DeleteManagerCommand, EditManagerCommand, Command
+
 
 views = Blueprint('views', __name__)
 
@@ -140,30 +142,32 @@ def registre():
     feedback = {'type': 'register', 'data': {'firstname': ''}}
     return render_template("registre.html", feedback=feedback)
 
+def manager_handler(request, cmd:Command, dest:str='/adminDashboard'):
+    with app.app_context():
+        if request.method == 'POST':
+            ret = cmd.execute()
+            if ret:
+                flash("Operation Succeded", "success")
+            else:
+                flash("Operation Failed!", "danger")
+            return redirect(dest)
+        return "Method Not Allowed", 405
+
 @views.route('/add_manager', methods=['POST'])
 def add_manager():
     command = AddManagerCommand(request.form)
-    return (manager_handler(command))
+    return (manager_handler(request, command))
 
 @views.route('/<string:id>/delete_manager/', methods=['POST'])
 def delete_manager(id):
     command = DeleteManagerCommand(id)
-    return (manager_handler(command))
+    return (manager_handler(request, command))
 
 @views.route('/<string:id>/edit_manager/', methods=['POST'])
 def edit_manager(id):
     command = EditManagerCommand(id, request.form)
-    return (manager_handler(command))
+    return (manager_handler(request, command))
 
-def manager_handler(cmd:Command, dest:str=url_for('views.adminHome')):
-    if request.method == 'POST':
-        ret = cmd.execute()
-        if ret:
-            flash("Operation Succeded", "success")
-        else
-            flash("Operation Failed!", "danger")
-        return redirect(dest)
-    return "Method Not Allowed", 405
 
 # @views.route('/add_manager', methods=['POST'])
 # def add_manager():

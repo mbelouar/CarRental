@@ -6,11 +6,15 @@ client = MongoClient('localhost', 27017)
 db = client.RentCars_db
 managers = db.managers
 
-class AddManagerCommand:
+class Command:
+    def execute(self) -> bool:
+        pass
+
+class AddManagerCommand(Command):
     def __init__(self, request_form):
         self.request_form = request_form
 
-    def execute(self):
+    def execute(self) -> bool:
         name = self.request_form['name']
         email = self.request_form['email']
         address = self.request_form['address']
@@ -34,11 +38,11 @@ class AddManagerCommand:
         managers.insert_one(manager_data)
         return True
 
-class DeleteManagerCommand:
+class DeleteManagerCommand(Command):
     def __init__(self, manager_id):
         self.manager_id = manager_id
 
-    def execute(self):
+    def execute(self) -> bool:
         # Your logic to delete manager from the database
         result = managers.delete_one({"_id": ObjectId(self.manager_id)})
         if result.deleted_count == 1:
@@ -46,12 +50,12 @@ class DeleteManagerCommand:
         else:
             return False
 
-class EditManagerCommand:
+class EditManagerCommand(Command):
     def __init__(self, manager_id, request_form):
         self.manager_id = manager_id
         self.request_form = request_form
 
-    def execute(self):
+    def execute(self) -> bool:
         name = self.request_form['name']
         email = self.request_form['email']
         address = self.request_form['address']
