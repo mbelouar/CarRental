@@ -7,6 +7,7 @@ from pymongo import MongoClient
 # ObjectId function is used to convert the id string to an objectid that MongoDB can understand
 from bson.objectid import ObjectId
 # from main import app
+from website.commands import AddManagerCommand, DeleteManagerCommand, EditManagerCommand
 
 views = Blueprint('views', __name__)
 
@@ -142,61 +143,91 @@ def registre():
 @views.route('/add_manager', methods=['POST'])
 def add_manager():
     if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        address = request.form['address']
-        phone = request.form['phone']
-        password = request.form['password']
-        password_check = request.form['passwordCheck']
-
-        # Check if password matches passwordCheck
-        if password != password_check:
-            flash("Passwords do not match. Please try again.", "danger")
-            return redirect(url_for("views.adminHome"))
-
-        # Check if password meets minimum length requirement
-        if len(password) < 6:
-            flash("Password must be at least 6 characters long. Please try again.", "danger")
-            return redirect(url_for("views.adminHome"))
-
-        # Create a new manager document
-        new_manager = {
-            'name': name,
-            'email': email,
-            'phone': phone,
-            'address': address,
-            'profile': "Manager",
-            'password': password
-        }
-
-        # Insert the new manager document into the database
-        managers.insert_one(new_manager)
+        add_manager_command = AddManagerCommand(request.form)
+        add_manager_command.execute()
         flash("Manager added successfully!", "success")
-
         return redirect(url_for("views.adminHome"))  # Redirect to the homepage after adding manager
 
-    # Handle invalid HTTP methods (though this route is configured for POST only)
     return "Method Not Allowed", 405
 
 @views.route('/<string:id>/delete_manager/', methods=['POST'])
 def delete_manager(id):
     if request.method == 'POST':
-        managers.delete_one({"_id": ObjectId(id)})
+        delete_manager_command = DeleteManagerCommand(id)
+        delete_manager_command.execute()
         flash("Manager deleted successfully!", "success")
         return redirect(url_for('views.adminHome'))
-    
+
+    return "Method Not Allowed", 405
+
 @views.route('/<string:id>/edit_manager/', methods=['POST'])
 def edit_manager(id):
     if request.method == 'POST':
-
-        name = request.form['name']
-        email = request.form['email']
-        address = request.form['address']
-        phone = request.form['phone']
-
-        managers.update_one({"_id": ObjectId(id)}, {"$set": {'name': name, 'email': email, 'address': address, 'phone': phone}})
+        edit_manager_command = EditManagerCommand(id, request.form)
+        edit_manager_command.execute()
         flash("Manager updated successfully!", "success")
         return redirect(url_for('views.adminHome'))
+
+    return "Method Not Allowed", 405
+
+# @views.route('/add_manager', methods=['POST'])
+# def add_manager():
+#     if request.method == 'POST':
+#         name = request.form['name']
+#         email = request.form['email']
+#         address = request.form['address']
+#         phone = request.form['phone']
+#         password = request.form['password']
+#         password_check = request.form['passwordCheck']
+
+#         # Check if password matches passwordCheck
+#         if password != password_check:
+#             flash("Passwords do not match. Please try again.", "danger")
+#             return redirect(url_for("views.adminHome"))
+
+#         # Check if password meets minimum length requirement
+#         if len(password) < 6:
+#             flash("Password must be at least 6 characters long. Please try again.", "danger")
+#             return redirect(url_for("views.adminHome"))
+
+#         # Create a new manager document
+#         new_manager = {
+#             'name': name,
+#             'email': email,
+#             'phone': phone,
+#             'address': address,
+#             'profile': "Manager",
+#             'password': password
+#         }
+
+#         # Insert the new manager document into the database
+#         managers.insert_one(new_manager)
+#         flash("Manager added successfully!", "success")
+
+#         return redirect(url_for("views.adminHome"))  # Redirect to the homepage after adding manager
+
+#     # Handle invalid HTTP methods (though this route is configured for POST only)
+#     return "Method Not Allowed", 405
+
+# @views.route('/<string:id>/delete_manager/', methods=['POST'])
+# def delete_manager(id):
+#     if request.method == 'POST':
+#         managers.delete_one({"_id": ObjectId(id)})
+#         flash("Manager deleted successfully!", "success")
+#         return redirect(url_for('views.adminHome'))
+    
+# @views.route('/<string:id>/edit_manager/', methods=['POST'])
+# def edit_manager(id):
+#     if request.method == 'POST':
+
+#         name = request.form['name']
+#         email = request.form['email']
+#         address = request.form['address']
+#         phone = request.form['phone']
+
+#         managers.update_one({"_id": ObjectId(id)}, {"$set": {'name': name, 'email': email, 'address': address, 'phone': phone}})
+#         flash("Manager updated successfully!", "success")
+#         return redirect(url_for('views.adminHome'))
     
 @views.route('/<string:id>/edit_admin/', methods=['POST'])
 def edit_admin(id):
