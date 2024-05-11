@@ -8,6 +8,8 @@ from website.models import db, admins, managers, clients, cars, reservations, cl
 
 from website.repository import ManagerRepository, CarRepository, ResRepository
 
+from website.facade import CarRentalFacade
+
 views = Blueprint('views', __name__)
 
 # client = MongoClient('localhost', 27017)
@@ -42,22 +44,40 @@ def adminHome():
     if not user_data:
         redirect(url_for("views.signin"))
 
-    # Instantiate ManagerRepository
-    manager_repository = ManagerRepository()
-    car_repository = CarRepository()
-    res_repository = ResRepository()
-    # Fetch all managers from the repository
-    all_managers = manager_repository.get_all_managers()
-    all_cars = car_repository.get_all_cars()
-    all_res = res_repository.get_all_reservations()
+    car_rental_facade = CarRentalFacade()
+    all_managers = list(car_rental_facade.get_all_managers())
+    all_cars = list(car_rental_facade.get_all_cars())
+    all_res = list(car_rental_facade.get_all_reservations())
 
-    # Count the number of managers
-    manager_count = manager_repository.collection.count_documents({})
-    car_count = car_repository.collection.count_documents({})
-    reservation_count = res_repository.collection.count_documents({})
+    manager_count = len(all_managers)
+    car_count = len(all_cars)
+    reservation_count = len(all_res)
 
-    # Pass the managers data and manager count to the template
     return render_template("AdminDashboard.html", managers=all_managers, manager_count=manager_count, user_data=user_data, car_count=car_count, reservation_count=reservation_count)
+
+
+# @views.route('/adminDashboard')
+# def adminHome():
+#     user_data = session.get('user_data')
+#     if not user_data:
+#         redirect(url_for("views.signin"))
+
+#     # Instantiate ManagerRepository
+#     manager_repository = ManagerRepository()
+#     car_repository = CarRepository()
+#     res_repository = ResRepository()
+#     # Fetch all managers from the repository
+#     all_managers = manager_repository.get_all_managers()
+#     all_cars = car_repository.get_all_cars()
+#     all_res = res_repository.get_all_reservations()
+
+#     # Count the number of managers
+#     manager_count = manager_repository.collection.count_documents({})
+#     car_count = car_repository.collection.count_documents({})
+#     reservation_count = res_repository.collection.count_documents({})
+
+#     # Pass the managers data and manager count to the template
+#     return render_template("AdminDashboard.html", managers=all_managers, manager_count=manager_count, user_data=user_data, car_count=car_count, reservation_count=reservation_count)
 
 @views.route('/profile')
 def profile():
