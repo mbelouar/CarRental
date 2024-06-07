@@ -43,7 +43,6 @@ class DeleteManagerCommand(Command):
         self.manager_id = manager_id
 
     def execute(self) -> bool:
-        # Your logic to delete manager from the database
         result = managers.delete_one({"_id": ObjectId(self.manager_id)})
         if result.deleted_count == 1:
             return True

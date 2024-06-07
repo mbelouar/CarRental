@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+    <html>
+        <head>
+          <meta charset="utf-8">
+          <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='registre.css')}}">
+        </head>
+        
+        <body>
+          <div class="login-root">
+            <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
+              <div class="loginbackground box-background--white padding-top--64">
+                <div class="loginbackground-gridContainer">
+                  <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
+                    <div class="box-root" style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;">
+                    </div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
+                    <div class="box-root box-divider--light-all-2 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
+                    <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
+                    <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
+                    <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
+                    <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
+                    <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
+                    <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
+                    <div class="box-root box-divider--light-all-2 animationRightLeft tans3s" style="flex-grow: 1;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
+                  <h1><a rel="dofollow">CarRental</a></h1>
+                </div>
+                <div class="formbg-outer">
+                  <div class="formbg">
+                    <div class="formbg-inner padding-horizontal--48">
+                      <span class="padding-bottom--15">Sign in to your account</span>
+                      <!-- <template id="registerTemplate"> -->
+                        <form method="post"  id='stripe-login'>
+                        <div class="field padding-bottom--24">
+                            <label for="name">Full Name</label>
+                            <input type="name" name="fullname" id='fullname' placeholder="Enter your full name">
+                          </div>
+                          <div class="field padding-bottom--24">
+                            <label for="phone">Phone Number</label>
+                            <input type="phone" name="phone" id='phone' placeholder="Enter your phone number "  >
+                          </div>
+                        <div class="field padding-bottom--24">
+                          <label for="email">Email</label>
+                          <input type="email" name="email" id="email" placeholder="exemple@gmail.com">
+                        </div>
+                        <div class="field padding-bottom--24">
+                            <label for="address">Address</label>
+                            <input type="text" name="address" id='address' placeholder="Enter your Detailed Adresse">
+                          </div>
+                          <div class="field padding-bottom--24">
+                            <label for="profile">Profile</label>
+                            <select name="profile" id="profile" class="profile-select">
+                                <option value="" disabled selected></option>
+                                <option value="Admin">Admin</option>
+                                <option value="Manager">Manager</option>
+                            </select>
+                          </div>
+                          
+                          
+                        <div class="field padding-bottom--24">
+                          <div class="grid--50-50">
+                            <label for="password">Password</label>
+                            <div class="reset-pass">
+                            </div>
+                          </div>
+                          <input type="password" name="password" id="password" placeholder="********">
+                        </div>
+                        <div class="field padding-bottom--24">
+                            <div class="grid--50-50">
+                              <label for="passwordCheck">Retype Password</label>
+                              <div class="reset-pass">
+                              </div>
+                            </div>
+                            <input type="password" name="passwordCheck" id='passwordcheck' placeholder="********">
+                          </div>
+                        <div class="field padding-bottom--24">
+                            {% if error_message %}
+                                <p class="msg_error">{{ error_message }}</p>
+                            {% endif %}
+                            <input :disabled='!isFormValid' type="submit" value="Sign in">
+                        </div>
+                      </form>
+                      <!-- </template> -->
+                    </div>
+                  </div>
+                  <div class="footer-link padding-top--24">
+                    <span>Already have an account? <a href="{{ url_for('views.signin') }}">Sign in</a></span>
+                    <div class="listing padding-top--24 padding-bottom--24 flex-flex center-center">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </body>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const profileSelect = document.getElementById("profile-select");
+              const additionalFields = document.getElementById("additional-fields");
+          
+              profileSelect.addEventListener("change", function () {
+                if (profileSelect.value === "student") {
+                  additionalFields.style.display = "block";
+                } else {
+                  additionalFields.style.display = "none";
+                }
+              });
+            });
+          </script>
+          <script>
+            // Close the alert message when the close button (X) is clicked
+            document.querySelectorAll('.alert .close').forEach(function(button) {
+              button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none'; // Hide the parent alert element
+              });
+            });
+          </script>
+          
+
+        </html>
+    

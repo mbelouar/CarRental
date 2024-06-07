@@ -139,8 +139,8 @@
               <tr>
                 <th>Car ID</th>
                 <th>Client Name</th>
+                <th>Email</th>
                 <th>Duration</th>
-                <th>Price</th>
                 <th>Actions</th>
                 <th>Status</th>
               </tr>
@@ -150,10 +150,10 @@
                 <tr>
                   <td>{{ reservation.carId }}</td>
                   <td>{{ reservation.clientName }}</td>
-                  <td>{{ reservation.duration }}</td>
-                  <td>{{ reservation.price }}</td>
+                  <td>{{ reservation.email }}</td>
+                  <td>{{ reservation.duration }} days</td>
                   <td class="actions">
-                    <a href="#editEmployeeModal" class="edit" data-carid="{{ reservation.carId }}" data-clientname="{{ reservation.clientName }}" data-duration="{{ reservation.duration }}" data-price="{{ reservation.price }}" data-id="{{ reservation._id }}" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                    <a href="#editEmployeeModal" class="edit" data-carid="{{ reservation.carId }}" data-clientname="{{ reservation.clientName }}" data-email="{{ reservation.email }}" data-duration="{{ reservation.duration }}" data-id="{{ reservation._id }}" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                     <a href="#deleteEmployeeModal" class="delete" data-id="{{ reservation._id }}" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                     {% if reservation.status != "Confirmed" %}
                       <a href="#confirmEmployeeModal" class="confirm" data-id="{{ reservation._id }}" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Confirm">&#xE5CA;</i></a>
@@ -187,12 +187,12 @@
                             <input type="text" id="clientName" name="clientName" class="form-control" required>
                         </div>
                         <div class="form-group">
-                          <label for="duration">Duration</label>
-                          <input type="text" id="duration" name="duration" class="form-control" required>
+                          <label for="email">Email</label>
+                          <input type="email" id="email" name="email" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label for="price">Price</label>
-                            <input type="text" id="price" name="price" class="form-control" required>
+                          <label for="duration">Duration</label>
+                          <input type="text" id="duration" name="duration" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -223,12 +223,12 @@
                       <input type="text" id="clientName" name="clientName" class="form-control" required>
                   </div>
                   <div class="form-group">
-                    <label for="duration">Duration</label>
-                    <input type="text" id="duration" name="duration" class="form-control" required>
+                      <label for="email">Email</label>
+                      <input type="email" id="email" name="email" class="form-control" required>
                   </div>
                   <div class="form-group">
-                      <label for="price">Price</label>
-                      <input type="text" id="price" name="price" class="form-control" required>
+                    <label for="duration">Duration</label>
+                    <input type="text" id="duration" name="duration" class="form-control" required>
                   </div>
               </div>
               <div class="modal-footer">
@@ -344,13 +344,13 @@
       
       const carIdInput = form.querySelector("input[name='carId']")
       const clientNameInput = form.querySelector("input[name='clientName']")
+      const emailInput = form.querySelector("input[name='email']")
       const durationInput = form.querySelector("input[name='duration']")
-      const priceInput = form.querySelector("input[name='price']")
 
       carIdInput.value = el.dataset.carid
       clientNameInput.value = el.dataset.clientname
+      emailInput.value = el.dataset.email
       durationInput.value = el.dataset.duration
-      priceInput.value = el.dataset.price
     }
   })
 

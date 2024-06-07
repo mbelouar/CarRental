@@ -1,5 +1,11 @@
 from flask import Flask, Blueprint, render_template, request, url_for, redirect, jsonify, flash, session
+from flask_mail import Mail, Message
 from flask import current_app as app
+from website import mail  
+from io import BytesIO
+import os
+import threading
+from weasyprint import HTML
 from bson.objectid import ObjectId
 # from main import app
 from website.commands import AddManagerCommand, DeleteManagerCommand, EditManagerCommand, Command
@@ -9,6 +15,12 @@ from website.models import db, admins, managers, clients, cars, reservations, cl
 from website.repository import ManagerRepository, CarRepository, ResRepository
 
 from website.facade import CarRentalFacade
+
+from concurrent.futures import ThreadPoolExecutor
+
+from website.threads_tasks import send_email_in_background, save_data_in_background 
+
+executor = ThreadPoolExecutor(5)
 
 views = Blueprint('views', __name__)
 
@@ -37,6 +49,15 @@ views = Blueprint('views', __name__)
     
 #     # Pass the managers data and manager count to the template
 #     return render_template("AdminDashboard.html", managers=all_managers, manager_count=manager_count, user_data=user_data, car_count=car_count, reservation_count=reservation_count)
+
+# def send_email_in_background(app, msg):
+#     with app.app_context():
+#         try:
+#             mail.send(msg)
+#             print("Email sent successfully!")
+#         except Exception as e:
+#             print(f"Failed to send email: {e}")
+
 
 @views.route('/adminDashboard')
 def adminHome():
@@ -141,7 +162,7 @@ def signin():
                 flash("Incorrect profile. Please try again.", "danger")
 
     # Pass error_message to the template when rendering it
-    return render_template('signin.html')
+    return render_template('NewSignin.html')
 
 @views.route('/registre', methods=('GET', 'POST'))
 def registre():
@@ -159,7 +180,7 @@ def registre():
             admins.insert_one({'name': name, 
                             'phone': phone, 
                             'email': email, 
-                            'adress': address, 
+                            'address': address, 
                             'profile': profile, 
                             'password': password, 
                             'passwordCheck': passwordCheck})
@@ -179,7 +200,7 @@ def registre():
 
     # Pass `feedback` to the template
     feedback = {'type': 'register', 'data': {'firstname': ''}}
-    return render_template("registre.html", feedback=feedback)
+    return render_template("NewRegistre.html", feedback=feedback)
 
 def manager_handler(request, cmd:Command, dest:str='/adminDashboard'):
     with app.app_context():
@@ -374,14 +395,22 @@ def add_reservation():
     if request.method == 'POST':
         carId = request.form['carId']
         clientName = request.form['clientName']
+        email = request.form['email']
         duration = request.form['duration']
-        price = request.form['price']
+
+        car = db.cars.find_one({'carid': carId})
+        if not car:
+            flash("Car not found. Please try again.", "danger")
+            return redirect(url_for("views.reservation"))
+        if car['status'] == "Rented":
+            flash("Car is already rented. Please try again.", "danger")
+            return redirect(url_for("views.reservation"))
 
         # Create a new reservation document
         new_reservation = {
             'carId': carId,
             'clientName': clientName,
-            'price': price,
+            'email': email,
             'duration': duration,
             'status': 'Not Confirmed'
         }
@@ -401,16 +430,21 @@ def edit_reservation(id):
 
         carId = request.form['carId']
         clientName = request.form['clientName']
+        email = request.form['email']
         duration = request.form['duration']
-        price = request.form['price']
 
-        db.reservations.update_one({"_id": ObjectId(id)}, {"$set": {'carId': carId, 'clientName': clientName, 'duration': duration, 'price': price}})
+        db.reservations.update_one({"_id": ObjectId(id)}, {"$set": {'carId': carId, 'clientName': clientName, 'email':email, 'duration': duration}})
         flash("Reservation updated successfully!", "success")
         return redirect(url_for('views.reservation'))
     
 @views.route('/<string:id>/delete_reservation/', methods=['POST'])
 def delete_reservation(id):
     if request.method == 'POST':
+        res = reservations.find_one({'_id': ObjectId(id)})
+        res_id = str(res['carId'])
+
+        cars.update_one({"carid": res_id}, {"$set": {'status': "Available"}})
+
         db.reservations.delete_one({"_id": ObjectId(id)})
         flash("Reservation deleted successfully!", "success")
         return redirect(url_for('views.reservation'))
@@ -418,20 +452,81 @@ def delete_reservation(id):
 @views.route('/<string:id>/confirm_reservation', methods=['POST'])
 def confirm_reservation(id):
     if request.method == 'POST':
-        # Update reservation status to 'confirmed' in MongoDB
-        reservations.update_one({'_id': ObjectId(id)}, {'$set': {'status': 'Confirmed'}})
+        try:
+            # Update reservation status to 'confirmed' in MongoDB
+            reservations.update_one({'_id': ObjectId(id)}, {'$set': {'status': 'Confirmed'}})
 
-        # Store the confirmed reservation ID in the session
-        session['confirmed_reservation_id'] = id
+            # Store the confirmed reservation ID in the session
+            session['confirmed_reservation_id'] = id
 
-        res = db.reservations.find_one({'_id': ObjectId(id)})
-        res_id = str(res['carId']) 
+            res = reservations.find_one({'_id': ObjectId(id)})
+            res_id = str(res['carId'])
+            car = cars.find_one({'carid': res_id})
 
-        db.cars.update_one({"carid": res_id}, {"$set": {'status': "Rented"}})
+            cars.update_one({"carid": res_id}, {"$set": {'status': "Rented"}})
 
+            # Calculate the total price
+            price_per_day = float(car['price'])
+            duration = int(res['duration'])  # Assuming this is the number of days
+            total_price = price_per_day * duration
 
-        flash("Reservation was confirmed successfully!", "success")
-        return redirect(url_for('views.reservation'))
+            # Render HTML template for PDF
+            rendered_html = render_template('reservation_confirmation.html', reservation=res, cars=car, total_price=total_price)
+
+            # Generate PDF
+            pdf = HTML(string=rendered_html).write_pdf()
+
+            # Create email message
+            msg = Message(
+                subject='Reservation Confirmation',
+                recipients=[res['email']],
+                body=(
+                    f"Dear {res['clientName']},\n\n"
+                    f"Your reservation has been confirmed successfully. "
+                    f"Please proceed to the nearest branch to pick up your car.\n\n"
+                    f"Best regards,\nCar Rental Team"
+                )
+            )
+
+            # user_info = f"Client Name: {res['clientName']}, Client Email: {res['email']}, Car Rented: {car['carname']}, Duration: {res['duration']}, Total Price: {total_price}"
+
+            user_info = {
+                'Client Name': res['clientName'],
+                'Client Email': res['email'],
+                'Car Rented': car['carname'],
+                'Duration': res['duration'],
+                'Total Price': total_price
+            }
+
+            # Attach PDF to email
+            msg.attach(
+                filename=f'{id}_confirmation.pdf',
+                content_type='application/pdf',
+                data=pdf
+            )
+
+            # Send email
+            # mail.send(msg)
+
+            # Send email in a background thread
+            # executor.submit(send_email_in_background, app._get_current_object(), msg)
+
+            with ThreadPoolExecutor(max_workers=3) as executor:
+                # Submit the email sending task
+                executor.submit(send_email_in_background, app._get_current_object(), msg)
+                # Submit the data logging task
+                executor.submit(save_data_in_background, user_info)
+    
+
+            flash("Reservation was confirmed successfully! Please check your mailbox", "success")
+            return redirect(url_for('views.reservation'))
+        except Exception as e:
+            # Log the exception
+            print(f"Error during reservation confirmation: {e}")
+            return f"An error occurred: {e}", 500
+    else:
+        return "Method Not Allowed", 405
+
     
 @views.route('/add_car', methods=['POST'])
 def add_car():
